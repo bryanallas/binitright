@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Impact - Bin It Right</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
+                <span class="brand-name">Bin It Right</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="scanner.html">Scanner</a>
+            <a href="impact.html" class="active">Impact</a>
+            <a href="mystats.html" class="mystats-link">
+                My Stats <span class="lock-icon" id="statsLock">🔒</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+        </div>
+    </nav>
+
+    <main class="impact-container">
+        <h1 class="page-title">Community Impact</h1>
+        <p class="page-subtitle">Together, we're making a difference</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="totalItems">1,432,587</div>
+                <div class="stat-label">Total Items Scanned</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="totalUsers">12,847</div>
+                <div class="stat-label">Planet Protectors</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🗑️</div>
+                <div class="stat-value" id="generalWaste">423,156</div>
+                <div class="stat-label">General Waste</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">♻️</div>
+                <div class="stat-value" id="recycling">687,234</div>
+                <div class="stat-label">Recycling</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🌱</div>
+                <div class="stat-value" id="compost">256,891</div>
+                <div class="stat-label">Compost</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🔌</div>
+                <div class="stat-value" id="ewaste">65,306</div>
+                <div class="stat-label">E-Waste</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Scanning Activity Over Time</h2>
+            <canvas id="activityChart"></canvas>
+        </div>
+
+        <div class="leaderboards-section">
+            <h2>Leaderboards</h2>
+            
+            <div class="leaderboard-tabs">
+                <button class="tab-btn active" data-tab="total-points">Total Points</button>
+                <button class="tab-btn" data-tab="total-scans">Total Scans</button>
+                <button class="tab-btn" data-tab="streaks">Current Streaks</button>
+                <button class="tab-btn" data-tab="weekly">This Week</button>
+                <button class="tab-btn" data-tab="categories">By Category</button>
+            </div>
+
+            <div class="leaderboard-content">
+                <div id="total-points" class="leaderboard-panel active">
+                    <h3>🏆 Top 10 All-Time Points</h3>
+                    <div class="leaderboard-list" id="pointsLeaderboard"></div>
+                </div>
+
+                <div id="total-scans" class="leaderboard-panel">
+                    <h3>📊 Top 10 Total Scans</h3>
+                    <div class="leaderboard-list" id="scansLeaderboard"></div>
+                </div>
+
+                <div id="streaks" class="leaderboard-panel">
+                    <h3>🔥 Top 10 Current Streaks</h3>
+                    <div class="leaderboard-list" id="streaksLeaderboard"></div>
+                </div>
+
+                <div id="weekly" class="leaderboard-panel">
+                    <h3>⭐ Top 5 This Week</h3>
+                    <div class="leaderboard-list" id="weeklyLeaderboard"></div>
+                </div>
+
+                <div id="categories" class="leaderboard-panel">
+                    <div class="category-leaderboards">
+                        <div class="category-board">
+                            <h4>♻️ Recycling Champions</h4>
+                            <div class="leaderboard-list" id="recyclingLeaderboard"></div>
+                        </div>
+                        <div class="category-board">
+                            <h4>🌱 Compost Leaders</h4>
+                            <div class="leaderboard-list" id="compostLeaderboard"></div>
+                        </div>
+                        <div class="category-board">
+                            <h4>🗑️ General Waste Leaders</h4>
+                            <div class="leaderboard-list" id="generalLeaderboard"></div>
+                        </div>
+                        <div class="category-board">
+                            <h4>🔌 E-Waste Leaders</h4>
+                            <div class="leaderboard-list" id="ewasteLeaderboard"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="impact.js"></script>
+    <script>
+        function checkAuthStatus() {
+            const user = localStorage.getItem('binItRight_user');
+            const lockIcon = document.getElementById('statsLock');
+            if (user) {
+                lockIcon.style.display = 'none';
+            }
+        }
+        checkAuthStatus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Bin It Right</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
+                <span class="brand-name">Bin It Right</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="scanner.html">Scanner</a>
+            <a href="impact.html">Impact</a>
+            <a href="mystats.html" class="mystats-link">
+                My Stats <span class="lock-icon">🔒</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+        </div>
+    </nav>
+
+    <main class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 id="formTitle">Sign In</h1>
+                <p id="formSubtitle">Welcome back to Bin It Right</p>
+            </div>
+
+            <div id="messageBox" class="message-box" style="display: none;"></div>
+
+            <div id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <button class="btn-primary" id="submitBtn">Sign In</button>
+            </div>
+
+            <div class="form-toggle">
+                <span id="toggleText">Don't have an account?</span>
+                <a href="#" id="toggleLink">Create Account</a>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="login.js"></script>
+    <script>
+        // Handle form mode from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'signin';
+        
+        const formTitle = document.getElementById('formTitle');
+        const formSubtitle = document.getElementById('formSubtitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleText = document.getElementById('toggleText');
+        const toggleLink = document.getElementById('toggleLink');
+        
+        let currentMode = mode;
+        
+        function updateFormMode(newMode) {
+            currentMode = newMode;
+            
+            if (newMode === 'signup') {
+                formTitle.textContent = 'Create Account';
+                formSubtitle.textContent = 'Join the mission to save the planet';
+                submitBtn.textContent = 'Create Account';
+                toggleText.textContent = 'Already have an account?';
+                toggleLink.textContent = 'Sign In';
+            } else {
+                formTitle.textContent = 'Sign In';
+                formSubtitle.textContent = 'Welcome back to Bin It Right';
+                submitBtn.textContent = 'Sign In';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = 'Create Account';
+            }
+        }
+        
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const newMode = currentMode === 'signin' ? 'signup' : 'signin';
+            updateFormMode(newMode);
+            document.getElementById('messageBox').style.display = 'none';
+        });
+        
+        updateFormMode(mode);
+    </script>
+</body>
+</html>

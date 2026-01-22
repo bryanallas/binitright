@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin It Right - AI-Powered Waste Sorting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
+                <span class="brand-name">Bin It Right</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="scanner.html">Scanner</a>
+            <a href="impact.html">Impact</a>
+            <a href="mystats.html" class="mystats-link">
+                My Stats <span class="lock-icon" id="statsLock">🔒</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+        </div>
+    </nav>
+
+    <main class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line-1">Scan it. Bin it.</span>
+                <span class="title-line-2">Score points.</span>
+                <span class="title-line-3">Save the planet.</span>
+            </h1>
+            
+            <div class="stats-counter" onclick="location.href='impact.html'" style="cursor: pointer;">
+                <span class="counter-number" id="totalScans">1,432,587</span>
+                <span class="counter-text">items have been scanned so far</span>
+            </div>
+            
+            <p class="hero-subtitle">AI-powered waste sorting, one scan at a time.</p>
+            
+            <button class="btn-scan-now" onclick="location.href='scanner.html'">Scan Now</button>
+        </div>
+        
+        <div class="floating-particles" id="particles"></div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        function checkAuthStatus() {
+            const user = localStorage.getItem('binItRight_user');
+            const lockIcon = document.getElementById('statsLock');
+            
+            if (user) {
+                lockIcon.style.display = 'none';
+            }
+        }
+
+        // Create floating particles effect
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Load total scans from Firebase (placeholder for now)
+        async function loadTotalScans() {
+            // TODO: Replace with Firebase call
+            // For now, use placeholder
+            const totalScans = 1432587;
+            document.getElementById('totalScans').textContent = totalScans.toLocaleString();
+        }
+
+        checkAuthStatus();
+        createParticles();
+        loadTotalScans();
+    </script>
+</body>
+</html>

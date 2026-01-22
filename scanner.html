@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner - Bin It Right</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
+                <span class="brand-name">Bin It Right</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="scanner.html" class="active">Scanner</a>
+            <a href="impact.html">Impact</a>
+            <a href="mystats.html" class="mystats-link">
+                My Stats <span class="lock-icon" id="statsLock">🔒</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+        </div>
+    </nav>
+
+    <main class="scanner-container">
+        <h1 class="page-title">Waste Scanner</h1>
+        <p class="scanner-subtitle">Powered by Google's Teachable Machine</p>
+
+        <div id="scannerInterface">
+            <div id="startView" class="scanner-view active">
+                <div class="scanner-card">
+                    <div class="scanner-icon">📷</div>
+                    <h2>Ready to Scan?</h2>
+                    <p>Point your camera at an item to identify the correct bin</p>
+                    <button class="btn-primary" id="startScanBtn">Start Scanning</button>
+                </div>
+            </div>
+
+            <div id="cameraView" class="scanner-view">
+                <div class="camera-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="canvas"></canvas>
+                </div>
+                <div class="prediction-box">
+                    <div id="predicting">
+                        <div class="spinner"></div>
+                        <p>Analyzing item...</p>
+                    </div>
+                    <div id="predictionResult" style="display: none;">
+                        <h3>Item Detected!</h3>
+                        <p class="detected-category" id="detectedCategory"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quizView" class="scanner-view">
+                <div class="quiz-card">
+                    <h2>Which bin does this belong in?</h2>
+                    <div class="bin-options">
+                        <button class="bin-option" data-bin="general">
+                            <span class="bin-icon">🗑️</span>
+                            <span class="bin-name">General Waste</span>
+                        </button>
+                        <button class="bin-option" data-bin="recycling">
+                            <span class="bin-icon">♻️</span>
+                            <span class="bin-name">Recycling</span>
+                        </button>
+                        <button class="bin-option" data-bin="compost">
+                            <span class="bin-icon">🌱</span>
+                            <span class="bin-name">Compost</span>
+                        </button>
+                        <button class="bin-option" data-bin="ewaste">
+                            <span class="bin-icon">🔌</span>
+                            <span class="bin-name">E-Waste</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultView" class="scanner-view">
+                <div class="result-card">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <h2 id="resultTitle"></h2>
+                    <p id="resultMessage"></p>
+                    <div class="points-earned">
+                        <span class="points-label">Points Earned:</span>
+                        <span class="points-value" id="pointsEarned">+0</span>
+                    </div>
+                    <div id="loginPrompt" class="login-prompt" style="display: none;">
+                        <p>Sign in to track your progress and compete on the leaderboard!</p>
+                        <div class="login-buttons">
+                            <button class="btn-secondary" onclick="location.href='login.html?mode=signin'">Sign In</button>
+                            <button class="btn-secondary" onclick="location.href='login.html?mode=signup'">Create Account</button>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="scanAnotherBtn">Scan Another Item</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="scanner.js"></script>
+    <script>
+        // Check auth status
+        function checkAuthStatus() {
+            const user = localStorage.getItem('binItRight_user');
+            const lockIcon = document.getElementById('statsLock');
+            if (user) {
+                lockIcon.style.display = 'none';
+            }
+        }
+        checkAuthStatus();
+    </script>
+</body>
+</html>

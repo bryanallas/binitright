@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Stats - Bin It Right</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
+                <span class="brand-name">Bin It Right</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="scanner.html">Scanner</a>
+            <a href="impact.html">Impact</a>
+            <a href="mystats.html" class="mystats-link active">
+                My Stats <span class="lock-icon" id="statsLock">🔒</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+        </div>
+    </nav>
+
+    <main class="mystats-container">
+        <div id="loginRequired" class="login-required">
+            <div class="lock-icon-large">🔒</div>
+            <h1>Sign In Required</h1>
+            <p>Create an account or sign in to track your personal statistics and progress</p>
+            <div class="login-buttons">
+                <button class="btn-primary" onclick="location.href='login.html?mode=signup'">Create Account</button>
+                <button class="btn-secondary" onclick="location.href='login.html?mode=signin'">Sign In</button>
+            </div>
+        </div>
+
+        <div id="statsContent" style="display: none;">
+            <div class="user-header">
+                <h1>Welcome back, <span id="username"></span>! 👋</h1>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
+
+            <div class="stats-overview">
+                <div class="stat-card-large">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="userPoints">0</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+                
+                <div class="stat-card-large">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="userItems">0</div>
+                    <div class="stat-label">Total Items Scanned</div>
+                </div>
+                
+                <div class="stat-card-large">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value"><span id="userStreak">0</span> days</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+            </div>
+
+            <div class="category-stats">
+                <h2>Items by Category</h2>
+                <div class="category-grid">
+                    <div class="category-stat">
+                        <span class="category-icon">🗑️</span>
+                        <span class="category-name">General Waste</span>
+                        <span class="category-count" id="userGeneral">0</span>
+                    </div>
+                    <div class="category-stat">
+                        <span class="category-icon">♻️</span>
+                        <span class="category-name">Recycling</span>
+                        <span class="category-count" id="userRecycling">0</span>
+                    </div>
+                    <div class="category-stat">
+                        <span class="category-icon">🌱</span>
+                        <span class="category-name">Compost</span>
+                        <span class="category-count" id="userCompost">0</span>
+                    </div>
+                    <div class="category-stat">
+                        <span class="category-icon">🔌</span>
+                        <span class="category-name">E-Waste</span>
+                        <span class="category-count" id="userEwaste">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weekly-goals">
+                <h2>Weekly Goals</h2>
+                <div class="goals-list" id="weeklyGoals">
+                    <!-- Goals will be populated by JS -->
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h2>Your Scanning Activity</h2>
+                <canvas id="userActivityChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="mystats.js"></script>
+    <script>
+        function checkAuthStatus() {
+            const user = localStorage.getItem('binItRight_user');
+            const lockIcon = document.getElementById('statsLock');
+            const loginRequired = document.getElementById('loginRequired');
+            const statsContent = document.getElementById('statsContent');
+            
+            if (user) {
+                lockIcon.style.display = 'none';
+                loginRequired.style.display = 'none';
+                statsContent.style.display = 'block';
+            } else {
+                loginRequired.style.display = 'flex';
+                statsContent.style.display = 'none';
+            }
+        }
+        checkAuthStatus();
+    </script>
+</body>
+</html>
