@@ -22,8 +22,16 @@
             </a>
         </div>
         <div class="nav-right">
-            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
-            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+            <div id="authButtons">
+                <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+                <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+            </div>
+            <div id="userProfile" style="display: none;">
+                <span class="user-display">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="headerUsername"></span>
+                </span>
+            </div>
         </div>
     </nav>
 

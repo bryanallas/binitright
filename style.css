@@ -95,6 +95,36 @@ body {
     gap: 1rem;
 }
 
+#authButtons {
+    display: flex;
+    gap: 1rem;
+}
+
+#userProfile {
+    display: none;
+    align-items: center;
+}
+
+.user-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(46, 204, 113, 0.1);
+    border: 2px solid var(--primary-green);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.user-icon {
+    font-size: 1.2rem;
+}
+
+.user-name {
+    color: var(--primary-green);
+}
+
 .btn-signin {
     padding: 0.5rem 1.5rem;
     background: transparent;

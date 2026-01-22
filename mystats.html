@@ -23,8 +23,16 @@
             </a>
         </div>
         <div class="nav-right">
-            <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
-            <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+            <div id="authButtons">
+                <button class="btn-signin" onclick="location.href='login.html?mode=signin'">Sign In</button>
+                <button class="btn-create" onclick="location.href='login.html?mode=signup'">Create Account</button>
+            </div>
+            <div id="userProfile" style="display: none;">
+                <span class="user-display">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="headerUsername"></span>
+                </span>
+            </div>
         </div>
     </nav>
 
@@ -112,14 +120,24 @@
             const lockIcon = document.getElementById('statsLock');
             const loginRequired = document.getElementById('loginRequired');
             const statsContent = document.getElementById('statsContent');
+            const authButtons = document.getElementById('authButtons');
+            const userProfile = document.getElementById('userProfile');
+            const headerUsername = document.getElementById('headerUsername');
             
             if (user) {
                 lockIcon.style.display = 'none';
                 loginRequired.style.display = 'none';
                 statsContent.style.display = 'block';
+                authButtons.style.display = 'none';
+                userProfile.style.display = 'flex';
+                
+                const userData = JSON.parse(user);
+                headerUsername.textContent = userData.username;
             } else {
                 loginRequired.style.display = 'flex';
                 statsContent.style.display = 'none';
+                authButtons.style.display = 'flex';
+                userProfile.style.display = 'none';
             }
         }
         checkAuthStatus();
