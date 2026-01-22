@@ -516,11 +516,16 @@ body {
     border-radius: 12px;
     border: 2px solid var(--border-color);
     margin-bottom: 3rem;
+    max-height: 400px;
 }
 
 .chart-container h2 {
     margin-bottom: 1.5rem;
     color: var(--primary-green);
+}
+
+.chart-container canvas {
+    max-height: 300px;
 }
 
 .leaderboards-section h2 {
