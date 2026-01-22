@@ -3,11 +3,33 @@
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
+    checkAuthStatus();
     loadCommunityStats();
     loadLeaderboards();
     setupTabs();
     createActivityChart();
 });
+
+// Check auth status
+function checkAuthStatus() {
+    const user = localStorage.getItem('binItRight_user');
+    const lockIcon = document.getElementById('statsLock');
+    const authButtons = document.getElementById('authButtons');
+    const userProfile = document.getElementById('userProfile');
+    const headerUsername = document.getElementById('headerUsername');
+    
+    if (user) {
+        lockIcon.style.display = 'none';
+        authButtons.style.display = 'none';
+        userProfile.style.display = 'flex';
+        
+        const userData = JSON.parse(user);
+        headerUsername.textContent = userData.username;
+    } else {
+        authButtons.style.display = 'flex';
+        userProfile.style.display = 'none';
+    }
+}
 
 // Setup tab navigation
 function setupTabs() {
