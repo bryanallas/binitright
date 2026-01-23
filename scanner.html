@@ -10,7 +10,7 @@
     <nav class="navbar">
         <div class="nav-left">
             <a href="index.html" class="logo-link">
-                <img src="assets/imgs/logo.png" alt="Bin It Right Logo" class="logo">
+                <img src="logo.png" alt="Bin It Right Logo" class="logo">
                 <span class="brand-name">Bin It Right</span>
             </a>
             <div class="nav-center">
@@ -45,7 +45,7 @@
                     <div class="scanner-icon">📷</div>
                     <h2>Ready to Scan?</h2>
                     <p>Point your camera at an item to identify the correct bin</p>
-                    <button class="btn-primary" id="startScanBtn">Start Scanning</button>
+                    <button class="btn-primary" id="startCameraBtn">Enable Camera</button>
                 </div>
             </div>
 
@@ -54,15 +54,17 @@
                     <video id="webcam" autoplay playsinline></video>
                     <canvas id="canvas"></canvas>
                 </div>
-                <div class="prediction-box">
-                    <div id="predicting">
-                        <div class="spinner"></div>
-                        <p>Analyzing item...</p>
-                    </div>
-                    <div id="predictionResult" style="display: none;">
-                        <h3>Item Detected!</h3>
-                        <p class="detected-category" id="detectedCategory"></p>
-                    </div>
+                <div class="scan-controls">
+                    <p class="scan-instruction">Position your item in the camera view</p>
+                    <button class="btn-primary btn-scan" id="captureBtn">Scan Item</button>
+                </div>
+            </div>
+
+            <div id="analyzingView" class="scanner-view">
+                <div class="scanner-card">
+                    <div class="spinner"></div>
+                    <h2>Analyzing Item...</h2>
+                    <p>Please wait while we identify your item</p>
                 </div>
             </div>
 

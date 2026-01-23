@@ -323,6 +323,28 @@ body {
     border: 2px solid var(--border-color);
 }
 
+.error-card {
+    border-color: var(--accent-gold);
+    background: linear-gradient(135deg, var(--card-bg), rgba(243, 156, 18, 0.05));
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.error-card h2 {
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+}
+
+.error-card p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
 .scanner-icon {
     font-size: 5rem;
     margin-bottom: 1rem;
@@ -379,6 +401,7 @@ body {
     border-radius: 12px;
     overflow: hidden;
     background: #000;
+    border: 3px solid var(--primary-green);
 }
 
 #webcam {
@@ -388,6 +411,36 @@ body {
 
 #canvas {
     display: none;
+}
+
+.scan-controls {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+}
+
+.scan-instruction {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.btn-scan {
+    font-size: 1.2rem;
+    padding: 1.2rem 3rem;
+    background: var(--primary-green);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 8px 24px rgba(46, 204, 113, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(46, 204, 113, 0.6);
+    }
 }
 
 .prediction-box {

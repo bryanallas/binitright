@@ -1,11 +1,11 @@
 // Scanner Logic for Bin It Right
 // Using Google's Teachable Machine
 
-// Configuration
-const MODEL_URL = './model/'; // Update with your model path
-let model, webcam, labelContainer, maxPredictions;
+// Configuration - UPDATE THIS WITH YOUR MODEL PATH
+const MODEL_URL = './model/'; // Change to './my_model/' if that's your folder name
+let model, webcam, maxPredictions;
 let currentPrediction = null;
-let scanning = false;
+let cameraReady = false;
 
 // Points system
 const POINTS = {
@@ -19,13 +19,16 @@ const POINTS = {
 // UI Elements
 const startView = document.getElementById('startView');
 const cameraView = document.getElementById('cameraView');
+const analyzingView = document.getElementById('analyzingView');
 const quizView = document.getElementById('quizView');
 const resultView = document.getElementById('resultView');
-const startScanBtn = document.getElementById('startScanBtn');
+const startCameraBtn = document.getElementById('startCameraBtn');
+const captureBtn = document.getElementById('captureBtn');
 const scanAnotherBtn = document.getElementById('scanAnotherBtn');
 
 // Event Listeners
-startScanBtn.addEventListener('click', startScanning);
+startCameraBtn.addEventListener('click', enableCamera);
+captureBtn.addEventListener('click', captureAndAnalyze);
 scanAnotherBtn.addEventListener('click', resetScanner);
 
 // Bin option buttons
@@ -33,105 +36,125 @@ document.querySelectorAll('.bin-option').forEach(btn => {
     btn.addEventListener('click', () => handleBinSelection(btn.dataset.bin));
 });
 
-// Start scanning
-async function startScanning() {
+// Enable camera
+async function enableCamera() {
     try {
-        await initCamera();
-        showView('camera');
-        scanning = true;
+        startCameraBtn.disabled = true;
+        startCameraBtn.textContent = 'Loading...';
+        
+        // Load model first
         await loadModel();
-        startPredicting();
+        
+        // Initialize camera
+        await initCamera();
+        
+        cameraReady = true;
+        showView('camera');
     } catch (error) {
-        console.error('Error starting scanner:', error);
-        alert('Unable to access camera. Please ensure you have granted camera permissions.');
+        console.error('Error enabling camera:', error);
+        alert('Unable to access camera or load model. Please check: 1) Camera permissions granted, 2) Model files in correct folder');
+        startCameraBtn.disabled = false;
+        startCameraBtn.textContent = 'Enable Camera';
     }
-}
-
-// Initialize camera
-async function initCamera() {
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-            facingMode: 'environment',
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-        } 
-    });
-    
-    const video = document.getElementById('webcam');
-    video.srcObject = stream;
-    
-    return new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-            video.play();
-            resolve();
-        };
-    });
 }
 
 // Load Teachable Machine model
 async function loadModel() {
-    // TODO: Replace with your actual Teachable Machine model
-    // For now, we'll use a placeholder that simulates the model
-    console.log('Loading model...');
+    const modelURL = MODEL_URL + 'model.json';
+    const metadataURL = MODEL_URL + 'metadata.json';
     
-    // Simulated model loading
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Load the model and metadata
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
     
-    // In production, use:
-    // const modelURL = MODEL_URL + 'model.json';
-    // const metadataURL = MODEL_URL + 'metadata.json';
-    // model = await tmImage.load(modelURL, metadataURL);
-    // maxPredictions = model.getTotalClasses();
+    console.log('Model loaded successfully. Classes:', maxPredictions);
 }
 
-// Start predicting
-async function startPredicting() {
-    if (!scanning) return;
+// Initialize camera using Teachable Machine webcam
+async function initCamera() {
+    const flip = true; // flip camera for mirror effect
+    webcam = new tmImage.Webcam(640, 480, flip);
+    await webcam.setup({ facingMode: 'environment' }); // Use back camera on mobile
+    await webcam.play();
     
-    // Simulate prediction - replace with actual model prediction
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Start the update loop to show live camera feed
+    requestAnimationFrame(updateCamera);
     
-    // Simulated prediction result
-    const predictions = simulatePrediction();
-    const topPrediction = predictions[0];
-    
-    // Check if it's actually trash
-    if (topPrediction.className === 'not-trash' && topPrediction.probability > 0.7) {
-        // Keep scanning
-        document.getElementById('predicting').innerHTML = `
-            <div class="spinner"></div>
-            <p>Please show a waste item...</p>
-        `;
-        setTimeout(() => startPredicting(), 1000);
-    } else {
-        // Found trash, stop camera and show quiz
-        currentPrediction = topPrediction;
-        stopCamera();
-        showQuiz();
+    // Replace the existing video element with webcam canvas
+    const videoContainer = document.querySelector('.camera-container');
+    const existingVideo = document.getElementById('webcam');
+    if (existingVideo) {
+        existingVideo.style.display = 'none';
+    }
+    videoContainer.insertBefore(webcam.canvas, videoContainer.firstChild);
+}
+
+// Update camera feed continuously
+async function updateCamera() {
+    if (webcam && cameraReady) {
+        webcam.update();
+        requestAnimationFrame(updateCamera);
     }
 }
 
-// Simulate prediction (replace with actual Teachable Machine code)
-function simulatePrediction() {
-    const classes = [
-        { className: 'general', probability: Math.random() },
-        { className: 'recycling', probability: Math.random() },
-        { className: 'compost', probability: Math.random() },
-        { className: 'ewaste', probability: Math.random() },
-        { className: 'not-trash', probability: Math.random() * 0.3 }
-    ];
+// Capture and analyze the current frame
+async function captureAndAnalyze() {
+    if (!cameraReady || !webcam) {
+        alert('Camera not ready. Please wait...');
+        return;
+    }
     
-    classes.sort((a, b) => b.probability - a.probability);
-    return classes;
+    try {
+        // Show analyzing view
+        showView('analyzing');
+        
+        // Get prediction from current webcam frame
+        const predictions = await model.predict(webcam.canvas);
+        
+        // Sort predictions by probability
+        predictions.sort((a, b) => b.probability - a.probability);
+        const topPrediction = predictions[0];
+        
+        console.log('Top prediction:', topPrediction.className, topPrediction.probability);
+        
+        // Add a small delay for better UX (feels more like it's "analyzing")
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Check if it's nontrash - if so, ask user to scan a waste item
+        const className = topPrediction.className.toLowerCase();
+        if (className.includes('nontrash') || className.includes('non-trash') || 
+            className.includes('not trash') || className.includes('nottras')) {
+            // Not trash - show alert and go back to camera
+            alert('No waste item detected. Please position a waste item (trash, recyclables, compost, or e-waste) in the camera and try again.');
+            showView('camera');
+            return;
+        }
+        
+        // Check if prediction confidence is high enough
+        if (topPrediction.probability < 0.5) {
+            // Not confident - ask to try again
+            alert('Unable to clearly identify the item. Please ensure good lighting and the item is clearly visible, then try again.');
+            showView('camera');
+            return;
+        }
+        
+        // Valid trash item found!
+        currentPrediction = topPrediction;
+        showQuiz();
+        
+    } catch (error) {
+        console.error('Error analyzing image:', error);
+        alert('Error analyzing image. Please try again.');
+        showView('camera');
+    }
 }
 
 // Stop camera
 function stopCamera() {
-    const video = document.getElementById('webcam');
-    if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
+    cameraReady = false;
+    if (webcam) {
+        webcam.stop();
     }
-    scanning = false;
 }
 
 // Show quiz view
@@ -141,7 +164,8 @@ function showQuiz() {
 
 // Handle bin selection
 async function handleBinSelection(selectedBin) {
-    const correctBin = currentPrediction.className;
+    // Map the prediction class name to our bin types
+    const correctBin = mapPredictionToBin(currentPrediction.className);
     const isCorrect = selectedBin === correctBin;
     
     // Calculate points
@@ -152,6 +176,25 @@ async function handleBinSelection(selectedBin) {
     
     // Show result
     showResult(isCorrect, correctBin, points);
+}
+
+// Map Teachable Machine class names to bin types
+function mapPredictionToBin(className) {
+    const lower = className.toLowerCase();
+    
+    // Map based on your exact Teachable Machine class names
+    if (lower.includes('waste')) {
+        return 'general';
+    } else if (lower.includes('recycl')) {
+        return 'recycling';
+    } else if (lower.includes('compost')) {
+        return 'compost';
+    } else if (lower.includes('ewaste')) {
+        return 'ewaste';
+    }
+    
+    // Default to general if can't determine
+    return 'general';
 }
 
 // Save scan data
@@ -168,21 +211,45 @@ async function saveScanData(selectedBin, correctBin, points) {
     const user = localStorage.getItem('binItRight_user');
     
     if (user) {
-        // Save to user's account (Firebase)
-        // TODO: Implement Firebase save
-        console.log('Saving to user account:', scanData);
+        // Save to user's account
+        const userData = JSON.parse(user);
+        const users = JSON.parse(localStorage.getItem('binItRight_users') || '{}');
+        const userAccount = users[userData.username];
+        
+        if (userAccount) {
+            // Update user stats
+            if (!userAccount.stats) {
+                userAccount.stats = {
+                    totalPoints: 0,
+                    totalItems: 0,
+                    general: 0,
+                    recycling: 0,
+                    compost: 0,
+                    ewaste: 0,
+                    streak: 0,
+                    scans: []
+                };
+            }
+            
+            userAccount.stats.totalPoints += points;
+            userAccount.stats.totalItems += 1;
+            userAccount.stats[correctBin] = (userAccount.stats[correctBin] || 0) + 1;
+            userAccount.stats.scans.push(scanData);
+            
+            // Save back to localStorage
+            users[userData.username] = userAccount;
+            localStorage.setItem('binItRight_users', JSON.stringify(users));
+            
+            console.log('User stats updated:', userAccount.stats);
+        }
     }
     
     // Always save to community stats
-    // TODO: Implement Firebase community stats update
-    console.log('Updating community stats:', scanData);
-    
-    // Update local storage for now
-    updateLocalStats(scanData);
+    updateCommunityStats(scanData);
 }
 
-// Update local storage stats
-function updateLocalStats(scanData) {
+// Update community statistics
+function updateCommunityStats(scanData) {
     let stats = JSON.parse(localStorage.getItem('binItRight_communityStats') || '{}');
     
     stats.totalScans = (stats.totalScans || 0) + 1;
@@ -235,10 +302,20 @@ function showResult(isCorrect, correctBin, points) {
     showView('result');
 }
 
-// Reset scanner
+// Reset scanner - go back to camera view (not start view)
 function resetScanner() {
     currentPrediction = null;
-    showView('start');
+    
+    // If camera was enabled, go back to camera view
+    if (cameraReady) {
+        showView('camera');
+    } else {
+        // Otherwise go to start
+        stopCamera();
+        showView('start');
+        startCameraBtn.disabled = false;
+        startCameraBtn.textContent = 'Enable Camera';
+    }
 }
 
 // Show specific view
@@ -246,6 +323,7 @@ function showView(viewName) {
     const views = {
         start: startView,
         camera: cameraView,
+        analyzing: analyzingView,
         quiz: quizView,
         result: resultView
     };
