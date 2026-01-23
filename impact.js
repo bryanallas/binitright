@@ -3,7 +3,7 @@
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuthStatus();
+    checkAuth();
     loadCommunityStats();
     loadLeaderboards();
     setupTabs();
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Check auth status
-function checkAuthStatus() {
+function checkAuth() {
     const user = localStorage.getItem('binItRight_user');
     const lockIcon = document.getElementById('statsLock');
     const authButtons = document.getElementById('authButtons');
