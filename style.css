@@ -94,6 +94,8 @@ body {
 .nav-right {
     display: flex;
     gap: 1rem;
+    align-items: center;
+    min-height: 44px;
 }
 
 #authButtons {
@@ -116,6 +118,8 @@ body {
     border-radius: 8px;
     color: var(--text-light);
     font-weight: 600;
+    height: 44px;
+    box-sizing: border-box;
 }
 
 .user-icon {
@@ -135,6 +139,8 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
+    height: 44px;
+    box-sizing: border-box;
 }
 
 .btn-signin:hover {
@@ -151,6 +157,8 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
+    height: 44px;
+    box-sizing: border-box;
 }
 
 .btn-create:hover {
